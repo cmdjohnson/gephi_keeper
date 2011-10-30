@@ -99,9 +99,8 @@ module GephiKeeper
         # +_+ #
         for ref in refs
           # +_+ #
+          o[:references][ref] ||= { :count => 0 }
           ref_p = o[:references][ref]
-          # +_+ # <-- im a crab
-          ref_p ||= { :count => 0 }
           # Increase count.
           ref_p[:count] += 1
         end
@@ -114,7 +113,7 @@ module GephiKeeper
       #   - [username]
       #     - :tweets                 Array of tweets (Hash objects)
       #     - :first_tweeted_at       Time object when the first tweet from this user was registered.
-      #     - :references             Array of usernames (String) mentioned by this user in any tweet
+      #     - :references             Hash of usernames (String) mentioned by this user in any tweet
       #       - [username]
       #         - :count              Number of times referred to username in any tweet
       ##########################################################################
@@ -122,10 +121,13 @@ module GephiKeeper
       # Now convert to nodes & edges
       occurrences.keys.each do |key|
         num_tweets = occurrences[key][:tweets].count
-        nodes.push( { 
-            :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_time(occurrences[key][:first_tweeted_at]) },
-            :nested => { "viz:size" => { :value => num_tweets } }
+        nodes.push( { :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_time(occurrences[key][:first_tweeted_at]) },
+            :size => num_tweets
           } )
+        # +_+ #
+        occurrences[key][:references].keys.each do |reference|
+          edges.push( { :id => "#{key}-#{reference}", :source => key, :target => reference, :weight => occurrences[key][:references][reference][:count] } )
+        end
       end
       
       ##########################################################################
@@ -150,8 +152,8 @@ module GephiKeeper
       
       xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"
       
-      xml.gexf :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2" do
-        xml.graph do
+      xml.gexf :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2", "xmlns_viz" => "http://www.gexf.net/1.1draft/viz" do
+        xml.graph :timeformat => "date" do
           xml.meta :lastmodifieddate => xml_last_modified_date do
             xml.creator xml_creator
             xml.description xml_description
@@ -159,9 +161,7 @@ module GephiKeeper
           xml.nodes do
             nodes.each do |node|
               xml.node node[:attributes] do
-                node[:nested].keys do |nested_node|
-                  xml.nested_node node[:nested][nested_node]
-                end
+                #xml.viz :size, :value => node[:size]
               end
             end
           end
