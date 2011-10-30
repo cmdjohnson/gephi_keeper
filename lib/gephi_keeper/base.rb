@@ -43,9 +43,44 @@ module GephiKeeper
       
       ##########################################################################
       # output xml
+      # 
+      # fuck xmlsimple. Hashes don't order too well.
       ##########################################################################
       
+      now = Time.now
+      xml_last_modified_date = "#{now.year}-#{now.month}-#{now.day}"
+      xml_creator = screen_name
+      xml_description = description
       
+      nodes = [ 
+        { :id => 0, :label => "Hello" }, 
+        { :id => 1, :label => "World" } ]
+      edges = [ 
+        { :id => 0, :source => 0, :target => 1 } 
+        ]
+      
+      xml = Builder::XmlMarkup.new( :target => $stdout, :indent => 2 )
+      
+      xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"
+      
+      xml.gexf :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2" do
+        xml.graph do
+          xml.meta :lastmodifieddate => xml_last_modified_date do
+            xml.creator xml_creator
+            xml.description xml_description
+          end
+          xml.nodes do
+            nodes.each do |node|
+              xml.node node
+            end
+          end
+          xml.edges do
+            edges.each do |edge|
+              xml.edge edge
+            end
+          end
+        end
+      end
       
       ##########################################################################
       # fin
