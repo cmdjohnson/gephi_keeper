@@ -44,6 +44,9 @@ module GephiKeeper
       # les tweets
       tweets = json["tweets"]
       
+      start_time = Time.parse tweets.last["created_at"]
+      end_time = Time.parse tweets.first["created_at"]
+      
       # We will convert to this
       nodes = []
       edges = []
@@ -121,7 +124,7 @@ module GephiKeeper
       # Now convert to nodes & edges
       occurrences.keys.each do |key|
         num_tweets = occurrences[key][:tweets].count
-        nodes.push( { :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_time(occurrences[key][:first_tweeted_at]) },
+        nodes.push( { :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_date(occurrences[key][:first_tweeted_at]) },
             :size => num_tweets
           } )
         # +_+ #
@@ -137,7 +140,7 @@ module GephiKeeper
       ##########################################################################
       
       now = Time.now
-      xml_last_modified_date = convert_time_to_gexf_time(now)
+      xml_last_modified_date = convert_time_to_gexf_date(now)
       xml_creator = screen_name
       xml_description = "gephi_keeper GEXF output for keyword '#{keyword}' at (#{xml_last_modified_date}). Tags: '#{tags}'. Number of tweets: #{count}. Description: #{description}"
       
@@ -153,7 +156,7 @@ module GephiKeeper
       xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"
       
       xml.gexf :xmlns => "http://www.gexf.net/1.1", :version => "1.1", "xmlns:viz" => "http://www.gexf.net/1.1draft/viz" do
-        xml.graph :timeformat => "date" do
+        xml.graph :mode => "dynamic", :start => convert_time_to_gexf_date(start_time), :end => convert_time_to_gexf_date(end_time), :timeformat => "date" do
           xml.meta :lastmodifieddate => xml_last_modified_date do
             xml.creator xml_creator
             xml.description xml_description
@@ -182,7 +185,7 @@ module GephiKeeper
     
     protected
     
-    def self.convert_time_to_gexf_time(time)
+    def self.convert_time_to_gexf_date(time)
       raise "Need Time object" unless time.is_a? Time
       
       "#{time.year}-#{time.month}-#{time.day}"
