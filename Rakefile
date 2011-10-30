@@ -14,7 +14,7 @@ $hoe = Hoe.spec 'gephi_keeper' do
   self.developer 'Commander Johnson', 'commanderjohnson@gmail.com'
   self.post_install_message = 'PostInstall.txt'
   self.rubyforge_name       = self.name
-  self.extra_deps         = [ "json", "options_checker" ]
+  self.extra_deps         = [ "json", "options_checker", "xml-simple" ]
 
 end
 
