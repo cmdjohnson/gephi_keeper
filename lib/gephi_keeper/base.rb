@@ -41,6 +41,31 @@ module GephiKeeper
       # les tweets
       tweets = json["tweets"]
       
+      # We will conver to this
+      nodes = []
+      edges = []
+      
+      # Example json tweet:
+      #{"archivesource":"twitter-search",
+      #"text":"RT @netbeans: Building a simple AtomPub client w #NetBeans, #Maven, #Java &amp; #Apache Abdera: http:\/\/t.co\/NQcUi32k",
+      #"to_user_id":"",
+      #"from_user":"banumelody",
+      #"id":"129498621086408704",
+      #"from_user_id":"277264632",
+      #"iso_language_code":"en",
+      #"source":"&lt;a href=&quot;http:\/\/www.hootsuite.com&quot; rel=&quot;nofollow&quot;&gt;HootSuite&lt;\/a&gt;",
+      #"profile_image_url":"http:\/\/a1.twimg.com\/profile_images\/1605902800\/Hytgs0pn_normal",
+      #"geo_type":"",
+      #"geo_coordinates_0":"0",
+      #"geo_coordinates_1":"0",
+      #"created_at":"Thu, 27 Oct 2011 10:04:11 +0000",
+      #"time":"1319709851"}
+      
+      # Add all nodes. Don't yet care if they are unique.
+      for tweet in tweets
+        nodes.push({ :id => tweet["from_user_id"], :label => tweet["from_user"] })
+      end
+      
       ##########################################################################
       # output xml
       # 
@@ -52,12 +77,12 @@ module GephiKeeper
       xml_creator = screen_name
       xml_description = "gephi_keeper GEXF output for keyword '#{keyword}' at (#{xml_last_modified_date}). Tags: '#{tags}'. Number of tweets: #{count}. Description: #{description}"
       
-      nodes = [ 
-        { :id => 0, :label => "Hello" }, 
-        { :id => 1, :label => "World" } ]
-      edges = [ 
-        { :id => 0, :source => 0, :target => 1 } 
-        ]
+#      nodes = [ 
+#        { :id => 0, :label => "Hello" }, 
+#        { :id => 1, :label => "World" } ]
+#      edges = [ 
+#        { :id => 0, :source => 0, :target => 1 } 
+#        ]
       
       xml = Builder::XmlMarkup.new( :target => $stdout, :indent => 2 )
       
