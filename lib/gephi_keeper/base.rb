@@ -5,6 +5,9 @@ require 'json'
 require 'options_checker'
 # xml-simple (note without '-')
 require 'builder'
+# time
+# for 'parse'
+require 'time'
 
 module GephiKeeper
   class Base
@@ -41,9 +44,12 @@ module GephiKeeper
       # les tweets
       tweets = json["tweets"]
       
-      # We will conver to this
+      # We will convert to this
       nodes = []
       edges = []
+      # But use this indirect representation first.
+      # +_+ #
+      occurrences ||= {}
       
       # Example json tweet:
       #{"archivesource":"twitter-search",
@@ -61,9 +67,65 @@ module GephiKeeper
       #"created_at":"Thu, 27 Oct 2011 10:04:11 +0000",
       #"time":"1319709851"}
       
-      # Add all nodes. Don't yet care if they are unique.
+      # Convert to a workable internal representation.
       for tweet in tweets
-        nodes.push({ :id => tweet["from_user_id"], :label => tweet["from_user"] })
+        #nodes.push({ :id => tweet["from_user_id"], :label => tweet["from_user"] })
+        # Make the hash if it wasn't already there.
+        occurrences[tweet["from_user"]] ||= {}
+        o = occurrences[tweet["from_user"]]
+        # Count the number of times this user exists in this export
+        o ||= {}
+        # Tweet array.
+        o[:tweets] ||= []
+        # Now push this tweet occurence to that user.
+        o[:tweets].push(tweet)
+        
+        # Check for the first tweet from this user.
+        # We are only interested in the date of the first tweet and none other.
+        # +_+ #
+        parsed_time = Time.parse tweet["created_at"]
+        # Was it before the existing tweet, if any?
+        if o[:first_tweeted_at].nil?
+          o[:first_tweeted_at] = parsed_time
+        else
+          o[:first_tweeted_at] = parsed_time if parsed_time < o[:first_tweeted_at]
+        end
+        
+        # Extract references.
+        o[:references] ||= {}
+        # All references in this tweet.
+        # +_+ #
+        refs = tweet["text"].scan(/@(\w+)/) # => [["netbeans"], ["zozo"], ["bozozo"]]
+        # +_+ #
+        for ref in refs
+          # +_+ #
+          ref_p = o[:references][ref]
+          # +_+ # <-- im a crab
+          ref_p ||= { :count => 0 }
+          # Increase count.
+          ref_p[:count] += 1
+        end
+      end
+      
+      ##########################################################################
+      # Data structure:
+      # 
+      # occurrences
+      #   - [username]
+      #     - :tweets                 Array of tweets (Hash objects)
+      #     - :first_tweeted_at       Time object when the first tweet from this user was registered.
+      #     - :references             Array of usernames (String) mentioned by this user in any tweet
+      #       - [username]
+      #         - :count              Number of times referred to username in any tweet
+      ##########################################################################
+      
+      # Now convert to nodes & edges
+      occurrences.keys.each do |key|
+        num_tweets = occurrences[key][:tweets].count
+        nodes.push( { 
+            :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_time(occurrences[key][:first_tweeted_at]) },
+            :nested => { "viz:size" => { :value => num_tweets } }
+          } )
       end
       
       ##########################################################################
@@ -73,16 +135,16 @@ module GephiKeeper
       ##########################################################################
       
       now = Time.now
-      xml_last_modified_date = "#{now.year}-#{now.month}-#{now.day}"
+      xml_last_modified_date = convert_time_to_gexf_time(now)
       xml_creator = screen_name
       xml_description = "gephi_keeper GEXF output for keyword '#{keyword}' at (#{xml_last_modified_date}). Tags: '#{tags}'. Number of tweets: #{count}. Description: #{description}"
       
-#      nodes = [ 
-#        { :id => 0, :label => "Hello" }, 
-#        { :id => 1, :label => "World" } ]
-#      edges = [ 
-#        { :id => 0, :source => 0, :target => 1 } 
-#        ]
+      #      nodes = [ 
+      #        { :id => 0, :label => "Hello" }, 
+      #        { :id => 1, :label => "World" } ]
+      #      edges = [ 
+      #        { :id => 0, :source => 0, :target => 1 } 
+      #        ]
       
       xml = Builder::XmlMarkup.new( :target => $stdout, :indent => 2 )
       
@@ -96,7 +158,11 @@ module GephiKeeper
           end
           xml.nodes do
             nodes.each do |node|
-              xml.node node
+              xml.node node[:attributes] do
+                node[:nested].keys do |nested_node|
+                  xml.nested_node node[:nested][nested_node]
+                end
+              end
             end
           end
           xml.edges do
@@ -112,6 +178,14 @@ module GephiKeeper
       ##########################################################################
       
       true
+    end
+    
+    protected
+    
+    def self.convert_time_to_gexf_time(time)
+      raise "Need Time object" unless time.is_a? Time
+      
+      "#{time.year}-#{time.month}-#{time.day}"
     end
   end
 end
