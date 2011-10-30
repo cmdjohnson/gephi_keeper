@@ -4,7 +4,7 @@ require 'json'
 # options_checker
 require 'options_checker'
 # xml-simple (note without '-')
-require 'xmlsimple'
+require 'builder'
 
 module GephiKeeper
   class Base
@@ -54,9 +54,11 @@ module GephiKeeper
       edges = [ { :id => 0, :source => 0, :target => 1 } ]
       
       xml_options = { "XmlDeclaration" => true, 'KeepRoot' => true }
-      xml_output = XmlSimple.xml_out({ :gexf => { :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2", 
-            #:meta => { :lastmodifieddate => xml_last_modified_date, :creator => [ xml_creator ], :description => [ xml_description ] },
-            :graph => { :nodes => { :node => nodes }, :edges => { :edge => edges } } } }, xml_options)
+      xml_output = XmlSimple.xml_out({ :gexf => [ { :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2" }, 
+            { :meta => { :lastmodifieddate => xml_last_modified_date, :creator => [ xml_creator ], :description => [ xml_description ] } },
+            { :graph => { :nodes => { :node => nodes }, :edges => { :edge => edges } } } ] }, xml_options)
+      
+      #xml_output = XmlSimple.xml_out({ :gexf => [ { :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2" }, { :foo => :bar } ] }, xml_options)
       
       puts xml_output
       
