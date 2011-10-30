@@ -45,7 +45,7 @@ module GephiKeeper
       # output xml
       ##########################################################################
       
-      now = Time.now.to_date
+      now = Time.now
       xml_last_modified_date = "#{now.year}-#{now.month}-#{now.day}"
       xml_creator = screen_name
       xml_description = description
