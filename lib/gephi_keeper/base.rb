@@ -161,7 +161,7 @@ module GephiKeeper
           xml.nodes do
             nodes.each do |node|
               xml.node node[:attributes] do
-                #xml.viz :size, :value => node[:size]
+                xml.viz :size, :value => node[:size]
               end
             end
           end
