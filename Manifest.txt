@@ -5,6 +5,7 @@ README.rdoc
 Rakefile
 bin/gephi_keeper
 lib/gephi_keeper.rb
+lib/gephi_keeper/base.rb
 lib/gephi_keeper/cli.rb
 script/console
 script/destroy

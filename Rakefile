@@ -12,9 +12,9 @@ Hoe.plugin :newgem
 # Run 'rake -T' to see list of generated tasks (from gem root directory)
 $hoe = Hoe.spec 'gephi_keeper' do
   self.developer 'Commander Johnson', 'commanderjohnson@gmail.com'
-  self.post_install_message = 'PostInstall.txt' # TODO remove if post-install message not required
-  self.rubyforge_name       = self.name # TODO this is default value
-  # self.extra_deps         = [['activesupport','>= 2.0.2']]
+  self.post_install_message = 'PostInstall.txt'
+  self.rubyforge_name       = self.name
+  self.extra_deps         = [ "json", "options_checker" ]
 
 end
 

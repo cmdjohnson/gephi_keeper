@@ -1,7 +1,1 @@
-
-For more information on gephi_keeper, see http://gephi_keeper.rubyforge.org
-
-NOTE: Change this information in PostInstall.txt 
-You can also delete it if you don't want it.
-
-
+Gratz! You can now run 'gephi_keeper -f FILENAME'
