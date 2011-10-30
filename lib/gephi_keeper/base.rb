@@ -50,7 +50,7 @@ module GephiKeeper
       now = Time.now
       xml_last_modified_date = "#{now.year}-#{now.month}-#{now.day}"
       xml_creator = screen_name
-      xml_description = description
+      xml_description = "gephi_keeper GEXF output for keyword '#{keyword}' at #{create_time}. Tags: '#{tags}'. Number of tweets: #{count}. Description: #{description}"
       
       nodes = [ 
         { :id => 0, :label => "Hello" }, 
