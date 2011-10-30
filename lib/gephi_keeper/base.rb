@@ -45,11 +45,17 @@ module GephiKeeper
       # output xml
       ##########################################################################
       
+      now = Time.now.to_date
+      xml_last_modified_date = "#{now.year}-#{now.month}-#{now.day}"
+      xml_creator = screen_name
+      xml_description = description
+      
       nodes = [ { :id => 0, :label => "Hello" }, { :id => 1, :label => "Word" } ]
       edges = [ { :id => 0, :source => 0, :target => 1 } ]
       
       xml_options = { "XmlDeclaration" => true, 'KeepRoot' => true }
       xml_output = XmlSimple.xml_out({ :gexf => { :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2", 
+            :meta => { :lastmodifieddate => xml_last_modified_date, :creator => [ xml_creator ], :description => [ xml_description ] },
             :graph => { :nodes => { :node => nodes }, :edges => { :edge => edges } } } }, xml_options)
       
       puts xml_output
