@@ -152,7 +152,7 @@ module GephiKeeper
       
       xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"
       
-      xml.gexf :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2", "xmlns_viz" => "http://www.gexf.net/1.1draft/viz" do
+      xml.gexf :xmlns => "http://www.gexf.net/1.1", :version => "1.1", "xmlns:viz" => "http://www.gexf.net/1.1draft/viz" do
         xml.graph :timeformat => "date" do
           xml.meta :lastmodifieddate => xml_last_modified_date do
             xml.creator xml_creator
@@ -161,7 +161,7 @@ module GephiKeeper
           xml.nodes do
             nodes.each do |node|
               xml.node node[:attributes] do
-                #xml.viz :size, :value => node[:size]
+                xml.viz :size, :value => node[:size]
               end
             end
           end
