@@ -55,7 +55,7 @@ module GephiKeeper
       
       xml_options = { "XmlDeclaration" => true, 'KeepRoot' => true }
       xml_output = XmlSimple.xml_out({ :gexf => { :xmlns => "http://www.gexf.net/1.2draft", :version => "1.2", 
-            :meta => { :lastmodifieddate => xml_last_modified_date, :creator => [ xml_creator ], :description => [ xml_description ] },
+            #:meta => { :lastmodifieddate => xml_last_modified_date, :creator => [ xml_creator ], :description => [ xml_description ] },
             :graph => { :nodes => { :node => nodes }, :edges => { :edge => edges } } } }, xml_options)
       
       puts xml_output
