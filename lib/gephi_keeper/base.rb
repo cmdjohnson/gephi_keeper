@@ -44,8 +44,8 @@ module GephiKeeper
       # les tweets
       tweets = json["tweets"]
       
-      start_time = Time.parse tweets.last["created_at"]
-      end_time = Time.parse tweets.first["created_at"]
+      start_time = Time.parse(tweets.last["created_at"])
+      end_time = Time.parse(tweets.first["created_at"])
       
       # We will convert to this
       nodes = []
@@ -86,7 +86,7 @@ module GephiKeeper
         # Check for the first tweet from this user.
         # We are only interested in the date of the first tweet and none other.
         # +_+ #
-        parsed_time = Time.parse tweet["created_at"]
+        parsed_time = Time.parse(tweet["created_at"])
         # Was it before the existing tweet, if any?
         if o[:first_tweeted_at].nil?
           o[:first_tweeted_at] = parsed_time
@@ -124,7 +124,7 @@ module GephiKeeper
       # Now convert to nodes & edges
       occurrences.keys.each do |key|
         num_tweets = occurrences[key][:tweets].count
-        nodes.push( { :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_date(occurrences[key][:first_tweeted_at]) },
+        nodes.push( { :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]) },
             :size => num_tweets
           } )
         # +_+ #
@@ -156,7 +156,7 @@ module GephiKeeper
       xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"
       
       xml.gexf :xmlns => "http://www.gexf.net/1.1", :version => "1.1", "xmlns:viz" => "http://www.gexf.net/1.1draft/viz" do
-        xml.graph :mode => "dynamic", :start => convert_time_to_gexf_date(start_time), :end => convert_time_to_gexf_date(end_time), :timeformat => "date" do
+        xml.graph :mode => "dynamic", :start => convert_time_to_gexf_integer(start_time), :end => convert_time_to_gexf_integer(end_time), :timeformat => "integer" do
           xml.meta :lastmodifieddate => xml_last_modified_date do
             xml.creator xml_creator
             xml.description xml_description
@@ -189,6 +189,12 @@ module GephiKeeper
       raise "Need Time object" unless time.is_a? Time
       
       "#{time.year}-#{time.month}-#{time.day}"
+    end
+    
+    def self.convert_time_to_gexf_integer(time)
+      raise "Need Time object" unless time.is_a? Time
+      
+      time.to_i
     end
   end
 end
