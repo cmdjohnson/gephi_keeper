@@ -145,18 +145,6 @@ module GephiKeeper
           edges.push( { :id => "#{key}-#{reference}", :source => key, 
               :target => reference, 
               :weight => occurrences[key][:references][reference][:count] } )
-          # Add missing node if the user referenced to somebody that has never tweeted
-          # within this population.
-          reference_key = occurrences[reference]
-          # +_+ #
-          if reference_key.nil?
-            # Modify node options
-            node_options[:attributes][:id] = node_options[:attributes][:label] = reference
-            node_options[:attributes][:num_tweets] = 0
-            node_options[:size] = 0
-            # Create the node
-            nodes.push(node_options)
-          end
         end
       end
       
