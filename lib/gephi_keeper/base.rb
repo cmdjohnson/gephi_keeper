@@ -91,10 +91,12 @@ module GephiKeeper
         parsed_time = Time.parse(tweet["created_at"])
         # Was it before the existing tweet, if any?
         if o[:first_tweeted_at].nil?
-          o[:first_tweeted_at] = parsed_time
+          my_parsed_time = parsed_time
         else
-          o[:first_tweeted_at] = parsed_time if parsed_time < o[:first_tweeted_at]
+          my_parsed_time = parsed_time if parsed_time < o[:first_tweeted_at]
         end
+        # +_+ #
+        o[:first_tweeted_at] = my_parsed_time
         
         # Extract references.
         o[:references] ||= {}
@@ -105,6 +107,9 @@ module GephiKeeper
         for ref in refs
           # Oracle is the same as oracle
           my_ref = ref.first.downcase
+          # Also add this user to the nodes list.
+          occurrences[my_ref] ||= {}
+          occurrences[:first_tweeted_at] ||= my_parsed_time          
           # +_+ #
           o[:references][my_ref] ||= { :count => 0 }
           ref_p = o[:references][my_ref]
@@ -143,7 +148,9 @@ module GephiKeeper
         nodes[key] = node_options
         # +_+ #
         occurrences[key][:references].keys.each do |reference|
+          # +_+ #
           edge_key = "#{key}-#{reference}"
+          # +_+ #
           edges[edge_key] = { :id => edge_key, :source => key, 
             :target => reference, 
             :weight => occurrences[key][:references][reference][:count] }
