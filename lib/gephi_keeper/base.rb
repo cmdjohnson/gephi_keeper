@@ -49,7 +49,7 @@ module GephiKeeper
       
       # We will convert to this
       nodes = {}
-      edges = []
+      edges = {}
       # But use this indirect representation first.
       # +_+ #
       occurrences ||= {}
@@ -143,9 +143,10 @@ module GephiKeeper
         nodes[key] = node_options
         # +_+ #
         occurrences[key][:references].keys.each do |reference|
-          edges.push( { :id => "#{key}-#{reference}", :source => key, 
-              :target => reference, 
-              :weight => occurrences[key][:references][reference][:count] } )
+          edge_key = "#{key}-#{reference}"
+          edges[edge_key] = { :id => edge_key, :source => key, 
+            :target => reference, 
+            :weight => occurrences[key][:references][reference][:count] }
         end
       end
       
@@ -185,7 +186,7 @@ module GephiKeeper
             end
           end
           xml.edges do
-            edges.each do |edge|
+            edges.each do |key, edge|
               xml.edge edge
             end
           end
