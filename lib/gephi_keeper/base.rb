@@ -73,9 +73,11 @@ module GephiKeeper
       # Convert to a workable internal representation.
       for tweet in tweets
         #nodes.push({ :id => tweet["from_user_id"], :label => tweet["from_user"] })
+        # Don't distinguish oracle and Oracle.
+        username = tweet["from_user"].downcase
         # Make the hash if it wasn't already there.
-        occurrences[tweet["from_user"]] ||= {}
-        o = occurrences[tweet["from_user"]]
+        occurrences[username] ||= {}
+        o = occurrences[username]
         # Count the number of times this user exists in this export
         o ||= {}
         # Tweet array.
@@ -101,9 +103,11 @@ module GephiKeeper
         refs = tweet["text"].scan(/@(\w+)/) # => [["netbeans"], ["zozo"], ["bozozo"]]
         # +_+ #
         for ref in refs
+          # Oracle is the same as oracle
+          my_ref = ref.first.downcase
           # +_+ #
-          o[:references][ref] ||= { :count => 0 }
-          ref_p = o[:references][ref]
+          o[:references][my_ref] ||= { :count => 0 }
+          ref_p = o[:references][my_ref]
           # Increase count.
           ref_p[:count] += 1
         end
@@ -123,13 +127,36 @@ module GephiKeeper
       
       # Now convert to nodes & edges
       occurrences.keys.each do |key|
+        # +_+ #
+        node_options = {}
+        # +_+ #
         num_tweets = occurrences[key][:tweets].count
-        nodes.push( { :attributes => { :id => key, :label => num_tweets, :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]) },
-            :size => num_tweets
-          } )
+        # +_+ #
+        node_options = { :attributes => { 
+            :id => key, 
+            :label => key, 
+            :num_tweets => num_tweets, 
+            :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]) },
+          :size => num_tweets
+        }
+        nodes.push(node_options)
         # +_+ #
         occurrences[key][:references].keys.each do |reference|
-          edges.push( { :id => "#{key}-#{reference}", :source => key, :target => reference, :weight => occurrences[key][:references][reference][:count] } )
+          edges.push( { :id => "#{key}-#{reference}", :source => key, 
+              :target => reference, 
+              :weight => occurrences[key][:references][reference][:count] } )
+          # Add missing node if the user referenced to somebody that has never tweeted
+          # within this population.
+          reference_key = occurrences[reference]
+          # +_+ #
+          if reference_key.nil?
+            # Modify node options
+            node_options[:attributes][:id] = node_options[:attributes][:label] = reference
+            node_options[:attributes][:num_tweets] = 0
+            node_options[:size] = 0
+            # Create the node
+            nodes.push(node_options)
+          end
         end
       end
       
