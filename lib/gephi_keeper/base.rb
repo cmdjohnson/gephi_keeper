@@ -46,6 +46,8 @@ module GephiKeeper
       
       start_time = Time.parse(tweets.last["created_at"])
       end_time = Time.parse(tweets.first["created_at"])
+      converted_start_time = convert_time_to_gexf_integer(start_time)
+      converted_end_time = convert_time_to_gexf_integer(end_time)
       
       # We will convert to this
       nodes = {}
@@ -109,7 +111,7 @@ module GephiKeeper
           my_ref = ref.first.downcase
           # Also add this user to the nodes list.
           occurrences[my_ref] ||= {}
-          occurrences[:first_tweeted_at] ||= my_parsed_time          
+          occurrences[my_ref][:first_tweeted_at] ||= my_parsed_time          
           # +_+ #
           o[:references][my_ref] ||= { :count => 0 }
           ref_p = o[:references][my_ref]
@@ -135,25 +137,34 @@ module GephiKeeper
         # +_+ #
         node_options = {}
         # +_+ #
-        num_tweets = occurrences[key][:tweets].count
+        num_tweets = 0
+        # +_+ #
+        begin
+          num_tweets = occurrences[key][:tweets].count
+        rescue
+        end
         # +_+ #
         node_options = { :attributes => { 
             :id => key, 
             :label => key, 
             :num_tweets => num_tweets, 
-            :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]) },
+            :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]),
+            :end => converted_end_time
+          },
           :size => num_tweets
         }
         # Now using Hash instead of Array
         nodes[key] = node_options
         # +_+ #
-        occurrences[key][:references].keys.each do |reference|
-          # +_+ #
-          edge_key = "#{key}-#{reference}"
-          # +_+ #
-          edges[edge_key] = { :id => edge_key, :source => key, 
-            :target => reference, 
-            :weight => occurrences[key][:references][reference][:count] }
+        if occurrences[key][:references]
+          occurrences[key][:references].keys.each do |reference|
+            # +_+ #
+            edge_key = "#{key}-#{reference}"
+            # +_+ #
+            edges[edge_key] = { :id => edge_key, :source => key, 
+              :target => reference, 
+              :weight => occurrences[key][:references][reference][:count] }
+          end
         end
       end
       
@@ -180,7 +191,7 @@ module GephiKeeper
       xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"
       
       xml.gexf :xmlns => "http://www.gexf.net/1.1", :version => "1.1", "xmlns:viz" => "http://www.gexf.net/1.1draft/viz" do
-        xml.graph :mode => "dynamic", :start => convert_time_to_gexf_integer(start_time), :end => convert_time_to_gexf_integer(end_time), :timeformat => "integer" do
+        xml.graph :mode => "dynamic", :start => converted_start_time, :end => converted_end_time, :timeformat => "integer" do
           xml.meta :lastmodifieddate => xml_last_modified_date do
             xml.creator xml_creator
             xml.description xml_description
