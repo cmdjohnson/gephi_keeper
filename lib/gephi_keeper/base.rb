@@ -55,6 +55,8 @@ module GephiKeeper
       # But use this indirect representation first.
       # +_+ #
       occurrences ||= {}
+      # Count the number of mentions with this hash.
+      mentions ||= {}
       
       # Example json tweet:
       #{"archivesource":"twitter-search",
@@ -117,6 +119,10 @@ module GephiKeeper
           ref_p = o[:references][my_ref]
           # Increase count.
           ref_p[:count] += 1
+          # Also increase the count of the global mentions in this population.
+          mentions[my_ref] ||= 0
+          # +_+ #
+          mentions[my_ref] += 1
         end
       end
       
@@ -144,14 +150,18 @@ module GephiKeeper
         rescue
         end
         # +_+ #
+        num_mentions = mentions[key] || 0
+        # +_+ #
         node_options = { :attributes => { 
             :id => key, 
             :label => key, 
-            :num_tweets => num_tweets, 
+            :num_tweets => num_tweets,
+            :num_mentions => num_mentions,
             :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]),
             :end => converted_end_time
           },
-          :size => num_tweets
+          :size => num_mentions,
+          :intensity => num_tweets
         }
         # Now using Hash instead of Array
         nodes[key] = node_options
@@ -204,6 +214,7 @@ module GephiKeeper
             nodes.each do |key, node|
               xml.node node[:attributes] do
                 xml.viz :size, :value => node[:size]
+                xml.viz :color, intensity_to_gexf_color(node[:intensity])
               end
             end
           end
@@ -234,6 +245,24 @@ module GephiKeeper
       raise "Need Time object" unless time.is_a? Time
       
       time.to_i
+    end
+    
+    def self.intensity_to_gexf_color(intensity)
+      r = 0
+      g = 0
+      b = 0
+      a = 0.7
+      
+      r_increment = 10 * intensity
+      r_increment = 255 if r_increment > 255
+      r += r_increment
+        
+      a_increment = 0.01 * intensity
+      
+      a_increment = 0.3 if a_increment > 0.3
+      a += a_increment
+      
+      { :r => r, :g => g, :b => b, :a => a }
     end
   end
 end
