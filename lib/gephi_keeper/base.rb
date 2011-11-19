@@ -48,7 +48,7 @@ module GephiKeeper
       end_time = Time.parse(tweets.first["created_at"])
       
       # We will convert to this
-      nodes = []
+      nodes = {}
       edges = []
       # But use this indirect representation first.
       # +_+ #
@@ -139,7 +139,8 @@ module GephiKeeper
             :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]) },
           :size => num_tweets
         }
-        nodes.push(node_options)
+        # Now using Hash instead of Array
+        nodes[key] = node_options
         # +_+ #
         occurrences[key][:references].keys.each do |reference|
           edges.push( { :id => "#{key}-#{reference}", :source => key, 
@@ -177,7 +178,7 @@ module GephiKeeper
             xml.description xml_description
           end
           xml.nodes do
-            nodes.each do |node|
+            nodes.each do |key, node|
               xml.node node[:attributes] do
                 xml.viz :size, :value => node[:size]
               end
