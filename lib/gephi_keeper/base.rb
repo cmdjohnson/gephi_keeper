@@ -161,9 +161,13 @@ module GephiKeeper
             # +_+ #
             edge_key = "#{key}-#{reference}"
             # +_+ #
+            reference_count = occurrences[key][:references][reference][:count]
+            # +_+ #
             edges[edge_key] = { :id => edge_key, :source => key, 
               :target => reference, 
-              :weight => occurrences[key][:references][reference][:count] }
+              :weight => reference_count,
+              :label => reference_count
+            }
           end
         end
       end
