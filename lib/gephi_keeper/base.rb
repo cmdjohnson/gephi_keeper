@@ -3,7 +3,7 @@ require 'rubygems'
 require 'json'
 # options_checker
 require 'options_checker'
-# xml-simple (note without '-')
+# builder
 require 'builder'
 # time
 # for 'parse'
@@ -52,6 +52,12 @@ module GephiKeeper
       # We will convert to this
       nodes = {}
       edges = {}
+      # Generic attributes for each node in this population.
+      attributes = []
+      # Define attributes.
+      attributes.push({ :title => "num_tweets", :type => "integer" })
+      attributes.push({ :title => "num_mentions", :type => "integer" })
+      
       # But use this indirect representation first.
       # +_+ #
       occurrences ||= {}
@@ -155,13 +161,16 @@ module GephiKeeper
         node_options = { :attributes => { 
             :id => key, 
             :label => key, 
-            :num_tweets => num_tweets,
-            :num_mentions => num_mentions,
             :start => convert_time_to_gexf_integer(occurrences[key][:first_tweeted_at]),
             :end => converted_end_time
           },
           :size => num_mentions,
-          :intensity => num_tweets
+          :intensity => num_tweets,
+          :attvalues => [
+            # 0 = tweets, 1 = mentions
+            { :value => num_tweets, :for => "0" },
+            { :value => num_mentions, :for => "1" } 
+            ]
         }
         # Now using Hash instead of Array
         nodes[key] = node_options
@@ -210,11 +219,22 @@ module GephiKeeper
             xml.creator xml_creator
             xml.description xml_description
           end
+          xml.attributes :class => :node do
+            for attribute in attributes
+              xml_attribute_options = { :id => attributes.index(attribute) }
+              xml.attribute xml_attribute_options.merge(attribute)
+            end
+          end
           xml.nodes do
             nodes.each do |key, node|
               xml.node node[:attributes] do
                 xml.viz :size, :value => node[:size]
                 xml.viz :color, intensity_to_gexf_color(node[:intensity])
+                xml.attvalues do
+                  for attvalue in node[:attvalues]
+                    xml.attvalue attvalue
+                  end
+                end
               end
             end
           end
