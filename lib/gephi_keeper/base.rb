@@ -170,7 +170,7 @@ module GephiKeeper
             # 0 = tweets, 1 = mentions
             { :value => num_tweets, :for => "0" },
             { :value => num_mentions, :for => "1" } 
-            ]
+          ]
         }
         # Now using Hash instead of Array
         nodes[key] = node_options
