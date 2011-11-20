@@ -227,9 +227,12 @@ module GephiKeeper
           end
           xml.nodes do
             nodes.each do |key, node|
+              # ATTRIBUTES ATTRIBUTES ATTRIBUTES ATTRIBUTES ATTRIBUTES ATTRIBUTES 
               xml.node node[:attributes] do
+                # VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ VIZ 
                 xml.viz :size, :value => node[:size]
                 xml.viz :color, intensity_to_gexf_color(node[:intensity])
+                # ATTVALUES ATTVALUES ATTVALUES ATTVALUES ATTVALUES ATTVALUES ATTVALUES 
                 xml.attvalues do
                   for attvalue in node[:attvalues]
                     xml.attvalue attvalue
