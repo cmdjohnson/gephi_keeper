@@ -238,6 +238,14 @@ module GephiKeeper
                     xml.attvalue attvalue
                   end
                 end
+                # PARENTS PARENTS PARENTS PARENTS PARENTS PARENTS PARENTS PARENTS 
+                if occurrences[key][:references]
+                  xml.parents do
+                    occurrences[key][:references].keys.each do |reference|
+                      xml.parent :for => reference
+                    end
+                  end
+                end
               end
             end
           end
