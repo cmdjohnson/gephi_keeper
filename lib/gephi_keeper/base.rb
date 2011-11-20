@@ -240,9 +240,11 @@ module GephiKeeper
                 end
                 # PARENTS PARENTS PARENTS PARENTS PARENTS PARENTS PARENTS PARENTS 
                 if occurrences[key][:references]
-                  xml.parents do
-                    occurrences[key][:references].keys.each do |reference|
-                      xml.parent :for => reference
+                  unless occurrences[key][:references].keys.count.eql?(0)
+                    xml.parents do
+                      occurrences[key][:references].keys.each do |reference|
+                        xml.parent :for => reference
+                      end
                     end
                   end
                 end
