@@ -40,6 +40,7 @@ gephi_keeper needs these gems in order to run properly:
 == EXAMPLES:
 
 Screenshots:
+
 https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitter_gephi_keeper_1.png
 
 https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitter_gephi_keeper_2.png
@@ -51,9 +52,12 @@ Recipe used for the screenshots:
  4. Rank label size based on num_mentions, min_size = 0.5 and max_size = 3
 
 Example Gephi files:
- 1. Hashtag #oracle (3,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/oracle.gexf.gz
- 2. Hashtag #java (5,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/java.gexf.gz
- 3. Hashtag #twitter (10,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/twitter.gexf.gz
+
+Hashtag #oracle (3,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/oracle.gexf.gz
+ 
+Hashtag #java (5,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/java.gexf.gz
+
+Hashtag #twitter (10,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/twitter.gexf.gz
 
 == LICENSE:
 
