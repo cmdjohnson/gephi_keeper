@@ -137,7 +137,7 @@ module GephiKeeper
       # 
       # occurrences
       #   - [username]
-      #     - :tweets                 Array of tweets (Hash objects)
+      #     - :tweets                 Hash of tweets (Hash objects)
       #     - :first_tweeted_at       Time object when the first tweet from this user was registered.
       #     - :references             Hash of usernames (String) mentioned by this user in any tweet
       #       - [username]
@@ -181,11 +181,18 @@ module GephiKeeper
             edge_key = "#{key}-#{reference}"
             # +_+ #
             reference_count = occurrences[key][:references][reference][:count]
+            # Get the start time for this edge. The start time is the largest
+            # time of the two nodes. So if node A is later than node B,
+            # the start time of the edge is that of node A.
+            largest_node_time = occurrences[key][:first_tweeted_at] # key = source
+            largest_node_time = occurrences[reference][:first_tweeted_at] if occurrences[reference][:first_tweeted_at] > largest_node_time # reference = target
+            edge_start = convert_time_to_gexf_integer(largest_node_time)
             # +_+ #
             edges[edge_key] = { :id => edge_key, :source => key, 
               :target => reference, 
               :weight => reference_count,
-              :label => reference_count
+              :label => reference_count,
+              :start => edge_start
             }
           end
         end
