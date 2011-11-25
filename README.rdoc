@@ -19,6 +19,8 @@ The GEXF files can then be processed by Gephi to produce colorful graph represen
  - Parents: when user A mentions user B, user B becomes A's parent.
  - Edges are plotted automatically between interacting users: when user A mentions user B, an edge is created.
  - Edge weight is based on the activity from user A to user B. When user A mentions B many times, the edge weight in increased.
+ 
+Please note that YourTwapperKeeper is limited to 10,000 tweets when exporting in the JSON format. In order to circumvent this limitation, the software should be extended to also support importing YTK's "Excel" format which is really nothing more than an ordinary HTML table. The "Excel" format is not limited to 10,000 tweets.
 
 == SYNOPSIS:
 
