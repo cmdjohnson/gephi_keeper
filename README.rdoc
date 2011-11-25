@@ -1,32 +1,64 @@
 = gephi_keeper
 
-* http://github.com/#{github_username}/#{project_name}
+* http://github.com/cmdjohnson/gephi_keeper
 
 == DESCRIPTION:
 
-FIX (describe your package)
+gephi_keeper is a Ruby conversion gem that links YourTwapperKeeper (http://your.twapperkeeper.com/) to Gephi (http://www.gephi.org) by converting JSON output from YTK to Gephi's GEXF format.
+
+YourTwapperKeeper is a self-hosted service that archives tweets. Gephi is a graph visualization tool. YTK exports the archived tweets in a number of formats, one of which is JSON. The JSON files produced by YTK are converted by gephi_keeper into Gephi-readable GEXF files.
+
+The GEXF files can then be processed by Gephi to produce colorful graph representations of Twitter output.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+ - Dynamic graphs: use the Gephi timeline to watch the network evolve over time.
+ - Attributes: Number of tweets per user, number of mentions per user.
+ - Node color is based on Twitter activity: a very active user is colored red whilst a not-so-active user is black.
+ - Node size is based on other Twitter users' activity: a user that is mentioned many times is larger than a user that is not.
+ - Parents: when user A mentions user B, user B becomes A's parent.
+ - Edges are plotted automatically between interacting users: when user A mentions user B, an edge is created.
+ - Edge weight is based on the activity from user A to user B. When user A mentions B many times, the edge weight in increased.
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+Input a file into gephi_keeper and pipe the output to a gzipped output file:
+
+ $ gephi_keeper -f input_file.json | gzip > output_file.gexf.gz
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+gephi_keeper needs these gems in order to run properly:
+ - json (for JSON input)
+ - options_checker
+ - builder (for XML output)
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+ $ sudo gem install gephi_keeper
+ 
+== EXAMPLES:
+
+Screenshots:
+https://www.github.com/cmdjohnson/gephi_keeper/examples/screenshots/twitter_gephi_keeper_1.png
+https://www.github.com/cmdjohnson/gephi_keeper/examples/screenshots/twitter_gephi_keeper_2.png
+
+Recipe used for the screenshots:
+ 1. Import oracle.gexf
+ 2. Layout: Fruchterman Reingold
+ 3. Enable labels
+ 4. Rank label size based on num_mentions, min_size = 0.5 and max_size = 3
+
+Example Gephi files:
+ 1. Hashtag #oracle (3,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/oracle.gexf.gz
+ 2. Hashtag #java (5,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/java.gexf.gz
+ 3. Hashtag #twitter (10,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/twitter.gexf.gz
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2011 Commander Johnson
+Copyright (c) 2011 Commander Johnson <commanderjohnson@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
