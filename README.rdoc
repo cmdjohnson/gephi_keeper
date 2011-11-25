@@ -53,11 +53,11 @@ Recipe used for the screenshots:
 
 Example Gephi files:
 
-Hashtag #oracle (3,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/oracle.gexf.gz
+Hashtag #oracle (3,000 tweets) https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/output/oracle.gexf.gz
  
-Hashtag #java (5,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/java.gexf.gz
+Hashtag #java (5,000 tweets) https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/output/java.gexf.gz
 
-Hashtag #twitter (10,000 tweets) https://www.github.com/cmdjohnson/gephi_keeper/examples/output/twitter.gexf.gz
+Hashtag #twitter (10,000 tweets) https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/output/twitter.gexf.gz
 
 == LICENSE:
 
