@@ -40,8 +40,8 @@ gephi_keeper needs these gems in order to run properly:
 == EXAMPLES:
 
 Screenshots:
-https://www.github.com/cmdjohnson/gephi_keeper/examples/screenshots/twitter_gephi_keeper_1.png
-https://www.github.com/cmdjohnson/gephi_keeper/examples/screenshots/twitter_gephi_keeper_2.png
+ - https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitter_gephi_keeper_1.png
+ - https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitter_gephi_keeper_2.png
 
 Recipe used for the screenshots:
  1. Import oracle.gexf
