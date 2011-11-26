@@ -47,11 +47,21 @@ https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitt
 
 https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitter_gephi_keeper_2.png
 
-Recipe used for the screenshots:
+Recipe used for these screenshots:
  1. Import oracle.gexf
  2. Layout: Fruchterman Reingold
  3. Enable labels
  4. Rank label size based on num_mentions, min_size = 0.5 and max_size = 3
+
+Some more screenshots:
+
+Same shot as no. 1, but with a different color ranking scheme (gradient) and different layout (Yifan Hu Multilevel)
+
+https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitter_gephi_keeper_3.png
+
+List of nodes
+
+https://github.com/cmdjohnson/gephi_keeper/raw/master/examples/screenshots/twitter_gephi_keeper_4.png
 
 Example Gephi files:
 
